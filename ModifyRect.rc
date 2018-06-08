@@ -16,13 +16,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 中文(中华人民共和国) resources
+// 中文(简体，中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
-#ifdef _WIN32
 LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 #pragma code_page(936)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -88,15 +86,23 @@ BEGIN
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
 
-IDD_MODIFYRECT_DIALOG DIALOGEX 0, 0, 320, 200
+IDD_MODIFYRECT_DIALOG DIALOGEX 0, 0, 488, 269
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "ModifyRect"
 FONT 9, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,209,179,50,14
-    PUSHBUTTON      "取消",IDCANCEL,263,179,50,14
-    PUSHBUTTON      "Button1",IDC_BUTTON1,249,130,50,14
+    DEFPUSHBUTTON   "确定",IDOK,379,248,50,14
+    PUSHBUTTON      "取消",IDCANCEL,431,248,50,14
+    PUSHBUTTON      "Button1",IDC_BUTTON1,320,248,50,14
+    EDITTEXT        IDC_EDIT_OFFSETX,356,204,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_OFFSETY,441,204,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_WIDTH,356,229,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_HEIGHT,441,232,40,14,ES_AUTOHSCROLL
+    LTEXT           "OffsetX",IDC_STATIC,312,206,26,8
+    LTEXT           "OffsetY",IDC_OFFSET_Y,413,207,27,8
+    LTEXT           "Width",IDC_STATIC,314,233,20,8
+    LTEXT           "Height",IDC_STATIC,415,234,22,8
 END
 
 
@@ -145,7 +151,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -158,9 +164,9 @@ BEGIN
     IDD_MODIFYRECT_DIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 313
+        RIGHTMARGIN, 481
         TOPMARGIN, 7
-        BOTTOMMARGIN, 193
+        BOTTOMMARGIN, 262
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -171,12 +177,12 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ABOUTBOX            "关于 ModifyRect(&A)..."
 END
 
-#endif    // 中文(中华人民共和国) resources
+#endif    // 中文(简体，中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -2,7 +2,7 @@
 //
 
 #pragma once
-
+#include "MyRectTracker.h"
 
 // CModifyRectDlg 对话框
 class CModifyRectDlg : public CDialog
@@ -18,10 +18,11 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
 
 public:
-	CRectTracker m_rectTracker;
+    CMyRectTracker m_rectTracker;
 	CRect m_rect;
 	BOOL m_IsDraw;
-	void ModifyCursor(CPoint point);
+	//void ModifyCursor(CPoint point);
+    void updateInfo(CRect rect);
 // 实现
 protected:
 	HICON m_hIcon;

@@ -101,11 +101,12 @@ BOOL CModifyRectDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	m_rectTracker.m_nStyle=CRectTracker::resizeOutside|CRectTracker::dottedLine;
+    m_rectTracker.m_nStyle = CRectTracker::resizeOutside | CRectTracker::solidLine;
 	m_rect.left=0;
-	m_rect.right=100;
-	m_rect.bottom=100;
+	m_rect.right=320;
+	m_rect.bottom=256;
 	m_rect.top=0;
+    m_rectTracker.m_sizeMin = CSize(160, 128);
 
 	//SetCapture();
 
@@ -154,17 +155,15 @@ void CModifyRectDlg::OnPaint()
 		CClientDC dc(this);
 		HBRUSH hBrush=(HBRUSH)GetStockObject(NULL_BRUSH);
 		HBRUSH oldBrush=(HBRUSH )dc.SelectObject(hBrush);
-
-
-
 		//设置边界
 		m_rectTracker.m_rect=m_rect;
-
 		//坐标映射;L逻辑 ---> D设备
 		dc.LPtoDP(&m_rectTracker.m_rect);
-
 		//画图形的边界
-		if(m_IsDraw) m_rectTracker.Draw(&dc);
+        //if(m_IsDraw) {
+            CPen Pen(PS_SOLID, 1, RGB(255, 0, 0));
+            m_rectTracker.Draw(&dc, &Pen);
+        //}
 
 		dc.SelectObject(oldBrush);
 		DeleteObject(hBrush);
@@ -211,7 +210,7 @@ void CModifyRectDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			POINT pos;
 			GetCursorPos(&pos);
 			ScreenToClient(&pos);
-			CRect ClientRect;
+            CRect ClientRect;
 			GetClientRect(&ClientRect);
 			ClientToScreen(&ClientRect);
 			ClipCursor(&ClientRect);
@@ -233,14 +232,20 @@ void CModifyRectDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	{ 
 		//鼠标弹起后才执行下面的程序
 		CClientDC   dc(this); 
-		CRect rect=m_rect;
+        CRect rect = m_rect;
+        m_rectTracker.m_rect.left = (m_rectTracker.m_rect.left + 8) / 16 * 16;
+        m_rectTracker.m_rect.top = (m_rectTracker.m_rect.top + 1) / 2 * 2;
+        m_rectTracker.m_rect.right = (m_rectTracker.m_rect.right + 8) / 16 * 16;
+        m_rectTracker.m_rect.bottom = (m_rectTracker.m_rect.bottom + 1) / 2 * 2;
+
 		m_rect=m_rectTracker.m_rect; 
+
 		rect.left-=4;
 		rect.right+=4;
 		rect.top-=4;
 		rect.bottom+=4;
 		InvalidateRect(&rect);
-		
+        updateInfo(m_rect);
 		ClipCursor(NULL);
 	}
 	else
@@ -259,41 +264,41 @@ void CModifyRectDlg::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 //用这种方法可以自定义光标形状,但是会有光标闪烁.
-void CModifyRectDlg::ModifyCursor(CPoint point)
-{
-	static int CurStyle=-2;
-	int ret=m_rectTracker.HitTest(point);
-	switch(ret)
-	{
-	case CRectTracker::hitTopLeft:
-	case CRectTracker::hitBottomRight:
-		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENWSE));
-		break;
-
-	case CRectTracker::hitTopRight:
-	case CRectTracker::hitBottomLeft:
-		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENESW));
-		break;
-
-	case CRectTracker::hitRight:
-	case CRectTracker::hitLeft:
-		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
-		break;
-
-	case CRectTracker::hitBottom:
-	case CRectTracker::hitTop:
-		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENS));
-		break;
-
-	case CRectTracker::hitMiddle:	
-			
-			SetCursor(LoadCursor(NULL,IDC_SIZEALL));
-		
-		break;
-	default:
-		break;
-	}
-}
+//void CModifyRectDlg::ModifyCursor(CPoint point)
+//{
+//	static int CurStyle=-2;
+//	int ret=m_rectTracker.HitTest(point);
+//	switch(ret)
+//	{
+//	case CRectTracker::hitTopLeft:
+//	case CRectTracker::hitBottomRight:
+//		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENWSE));
+//		break;
+//
+//	case CRectTracker::hitTopRight:
+//	case CRectTracker::hitBottomLeft:
+//		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENESW));
+//		break;
+//
+//	case CRectTracker::hitRight:
+//	case CRectTracker::hitLeft:
+//		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZEWE));
+//		break;
+//
+//	case CRectTracker::hitBottom:
+//	case CRectTracker::hitTop:
+//		SetCursor(AfxGetApp()->LoadStandardCursor(IDC_SIZENS));
+//		break;
+//
+//	case CRectTracker::hitMiddle:	
+//			
+//			SetCursor(LoadCursor(NULL,IDC_SIZEALL));
+//		
+//		break;
+//	default:
+//		break;
+//	}
+//}
 BOOL CModifyRectDlg::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: 在此添加专用代码和/或调用基类
@@ -304,7 +309,6 @@ BOOL CModifyRectDlg::PreCreateWindow(CREATESTRUCT& cs)
 BOOL CModifyRectDlg::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
 	//这里控制是否改变光标.
 	if(m_IsDraw && pWnd==this && m_rectTracker.SetCursor(this,nHitTest))//
 	{
@@ -330,4 +334,12 @@ void CModifyRectDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 
 	CDialog::OnLButtonUp(nFlags, point);
+}
+
+void CModifyRectDlg::updateInfo(CRect rect)
+{
+    SetDlgItemInt(IDC_EDIT_OFFSETX, rect.left);
+    SetDlgItemInt(IDC_EDIT_OFFSETY, rect.top);
+    SetDlgItemInt(IDC_EDIT_WIDTH, rect.Width());
+    SetDlgItemInt(IDC_EDIT_HEIGHT, rect.Height());
 }
